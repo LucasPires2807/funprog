@@ -1,1 +1,2 @@
-factorial x = Prelude.product[1..x]
+factorial 0 = 1
+factorial x = x * (factorial (x-1))

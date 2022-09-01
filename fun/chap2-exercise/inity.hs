@@ -1,2 +1,5 @@
 inity :: [a] -> [a]
-inity xs = reverse (drop 1 (reverse xs))
+inity xs = take (length xs - 1 ) xs
+
+--inityy :: [a] -> [a]
+--inityy xs = 
