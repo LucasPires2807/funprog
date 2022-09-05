@@ -1,4 +1,4 @@
 module Av where
 
-av :: Integer -> Integer -> Integer
-av x y = (x + y) `div` 2
+av :: Fractional a => a -> a -> a
+av x y = (x + y) / 2
