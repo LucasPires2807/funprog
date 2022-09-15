@@ -22,9 +22,11 @@ import qualified Data.Char as C
 -- You MUST NOT use ANY of these in your code
 
 head :: [a] -> a
+head [] = error "Can't take an empty list's head."
 head (x:_) = x
 
 tail :: [a] -> [a]
+tail [] = error "Can't take an empty list's tail."
 tail (_:xs) = xs
 
 null :: [a] -> Bool
@@ -32,19 +34,25 @@ null [] = True
 null _  = False
 
 length :: Integral i => [a] -> i
-length = undefined
+length [] = 0
+length xs = 1 + length (drop xs)
 
 sum :: Num a => [a] -> a
-sum = undefined
+sum [x] = x
+sum (x:xs) = x + (sum xs)
 
 product :: Num a => [a] -> a
-product = undefined
+product [] = 1
+product (x:xs) = x * (product xs)
 
 reverse :: [a] -> [a]
-reverse = undefined
+reverse [x] = [x]
+reverse (x:xs) = [x] ++ (reverse xs)
 
 (++) :: [a] -> [a] -> [a]
-(++) = undefined
+(++) xs [] = xs
+(++) xs [y] = xs <: y
+(++) xs (y:ys) = (xs ++ [y]) ++ ys
 
 -- right-associative for performance!
 -- (what?!)
@@ -52,7 +60,7 @@ infixr 5 ++
 
 -- (snoc is cons written backwards)
 snoc :: a -> [a] -> [a]
-snoc = undefined
+snoc x xs = x:xs
 
 (<:) :: [a] -> a -> [a]
 (<:) = flip snoc
@@ -71,7 +79,8 @@ infixl 5 +++
 -- maximum :: Ord a => [a] -> a
 
 -- take
--- drop
+drop :: [a] -> [a]
+drop (_:xs) = xs
 
 -- takeWhile
 -- dropWhile
