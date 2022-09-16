@@ -34,11 +34,16 @@ instance Show Nat where
 
 instance Eq Nat where
 
-    (==) x y = (x <= y) && (x >= y)
+    (==) Zero Zero         = True
+    (==) Zero n            = False
+    (==) n    Zero         = False
+    (==) (Succ n) (Succ m) = (==) m n
 
 instance Ord Nat where
 
-    (<=) x y = (x < y) || (x == y)
+    (<=) Zero y            = True
+    (<=) x Zero            = False
+    (<=) (Succ x) (Succ y) = (<=) x y
 
     -- Ord does not REQUIRE defining min and max.
     -- Howevener, you should define them WITHOUT using (<=).
@@ -92,19 +97,22 @@ odd x  = not (even x)
 
 -- quotient
 (</>) :: Nat -> Nat -> Nat
-(</>) x y = if x <%> y == 0 
--- (</>) Zero x = Zero
--- (</>) x Zero = error "Quotient cannot be zero"
--- (</>) x (Succ Zero) = x
--- (</>) x y = x <-> ((</>) x (pred y))
+(</>) x y | x <= y && (not (x == y))  = Zero
+          | x == y                    = (Succ Zero)
+          | y == Zero                 = error"Can't divide by zero"
+          | otherwise                 = (Succ Zero) <+> ((</>) (x<->y) y)
 
 -- remainder
 (<%>) :: Nat -> Nat -> Nat
-(<%>) = undefined
+(<%>) Zero y = Zero
+(<%>) _ Zero =  error"Can't divide by zero"
+(<%>) x    y | x <= y = x
+             | otherwise = ((x<->y) <%> y)
 
 -- divides
 (<|>) :: Nat -> Nat -> Bool
-(<|>) x y = if x <%> y == 0 then True else False
+(<|>) _ Zero = error"Can't divide by zero"
+(<|>) x y = if x <%> y == Zero then True else False
 
 divides = (<|>)
 
@@ -112,7 +120,7 @@ divides = (<|>)
 -- x `absDiff` y = |x - y|
 -- (Careful here: this - is the real minus operator!)
 absDiff :: Nat -> Nat -> Nat
-absDiff = undefined
+absDiff x y = if x <= y then y<->x else x<->y
 
 (|-|) = absDiff
 
@@ -122,7 +130,8 @@ factorial x = x <*> factorial (pred x)
 
 -- signum of a number (-1, 0, or 1)
 sg :: Nat -> Nat
-sg = undefined
+sg Zero = Zero
+sg x    = (Succ Zero)
 
 -- lo b a is the floor of the logarithm base b of a
 lo :: Nat -> Nat -> Nat
@@ -152,5 +161,5 @@ instance Num Nat where
     fromInteger x
         | x < 0     = Zero
         | x == 0    = Zero
-        | otherwise = undefined
+        | otherwise = Succ (fromInteger (x-1))
 
