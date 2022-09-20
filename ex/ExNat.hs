@@ -49,9 +49,13 @@ instance Ord Nat where
     -- Howevener, you should define them WITHOUT using (<=).
     -- Both are binary functions: max m n = ..., etc.
 
-    min (Succ x) (Succ y) = undefined
+    min x (Succ y) | x == y    = y
+                   | y == Zero = y
+                   |otherwise  = min x y
 
-    max = undefined
+    max x (Succ y) | x == y    = x
+                   | y == Zero = x
+                   | otherwise = max x y
 
 isZero :: Nat -> Bool
 isZero Zero = True
@@ -97,22 +101,20 @@ odd x  = not (even x)
 
 -- quotient
 (</>) :: Nat -> Nat -> Nat
-(</>) x y | x <= y && (not (x == y))  = Zero
+(</>) x y | y == Zero                 = error"Can't divide by zero"
+          | x <= y && (not (x == y))  = Zero
           | x == y                    = (Succ Zero)
-          | y == Zero                 = error"Can't divide by zero"
           | otherwise                 = (Succ Zero) <+> ((</>) (x<->y) y)
 
 -- remainder
 (<%>) :: Nat -> Nat -> Nat
-(<%>) Zero y = Zero
 (<%>) _ Zero =  error"Can't divide by zero"
-(<%>) x    y | x <= y = x
-             | otherwise = ((x<->y) <%> y)
+(<%>) x y = x <-> (y <*> (x</>y))
 
 -- divides
 (<|>) :: Nat -> Nat -> Bool
-(<|>) _ Zero = error"Can't divide by zero"
-(<|>) x y = if x <%> y == Zero then True else False
+(<|>) Zero _ = error"Can't divide by zero"
+(<|>) x y    = if y <%> x == Zero then True else False
 
 divides = (<|>)
 
@@ -135,7 +137,8 @@ sg x    = (Succ Zero)
 
 -- lo b a is the floor of the logarithm base b of a
 lo :: Nat -> Nat -> Nat
-lo = undefined
+lo (Succ Zero) a = Zero
+lo b a = (Succ Zero) <+> (lo (b</>a) a)
 
 
 --
@@ -144,10 +147,13 @@ lo = undefined
 --
 
 toNat :: Integral a => a -> Nat
-toNat = undefined
+toNat x | x < 0 = Zero
+        | x == 0 = Zero
+        | otherwise = Succ(toNat(x-1))
 
 fromNat :: Integral a => Nat -> a
-fromNat = undefined
+fromNat x | x == Zero = 0
+          | otherwise = 1 + (fromNat (x <-> (Succ Zero)))
 
 
 -- Obs: we can now easily make Nat an instance of Num.
