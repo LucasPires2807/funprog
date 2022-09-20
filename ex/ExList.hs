@@ -46,13 +46,14 @@ product [] = 1
 product (x:xs) = x * (product xs)
 
 reverse :: [a] -> [a]
-reverse [x] = [x]
-reverse (x:xs) = [x] ++ (reverse xs)
+reverse [] = []
+reverse (x:xs) = (reverse xs) +++ [x]
 
 (++) :: [a] -> [a] -> [a]
-(++) xs [] = xs
-(++) xs [y] = xs <: y
-(++) xs (y:ys) = (xs ++ [y]) ++ ys
+(++) [] []         = []
+(++) xs []         = xs
+(++) [] ys         = ys
+(++) (x:xs) (y:ys) = x:y:(xs ++ ys)
 
 -- right-associative for performance!
 -- (what?!)
@@ -60,7 +61,7 @@ infixr 5 ++
 
 -- (snoc is cons written backwards)
 snoc :: a -> [a] -> [a]
-snoc x xs = [x] ++ xs
+snoc x xs = xs ++ [x]
 
 (<:) :: [a] -> a -> [a]
 (<:) = flip snoc
