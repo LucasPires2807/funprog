@@ -47,7 +47,7 @@ product (x:xs) = x * (product xs)
 
 reverse :: [a] -> [a]
 reverse [] = []
-reverse (x:xs) = (reverse xs) +++ [x]
+reverse (x:xs) = (reverse xs) ++ [x]
 
 (++) :: [a] -> [a] -> [a]
 (++) [] []         = []
@@ -79,23 +79,42 @@ infixl 5 +++
 -- minimum :: Ord a => [a] -> a
 -- maximum :: Ord a => [a] -> a
 
--- take
+take :: Integral a => a -> [b] -> [b]
+take 0 xs     = []
+take n []     = []
+take n (x:xs) = x:(take (n-1) xs)
+
 drop :: [a] -> [a]
 drop (_:xs) = xs
 
--- takeWhile
--- dropWhile
+takeWhile :: (a -> Bool) -> [a] -> [a]
+takeWhile f (x:xs) | f x = x:(takeWhile f xs)
+                   | otherwise = []
+
+dropWhile :: (a -> Bool) -> [a] -> [a]
+dropWhile f (x:xs) | f x       = dropWhile f xs
+                   | otherwise = x:xs
 
 -- tails
--- init
+init :: [a] -> [a]
+init xs = take (length xs - 1 ) xs
 -- inits
 
 -- subsequences
 
--- any
--- all
+any :: Eq a => (a -> Bool) -> [a] -> Bool
+any f (x:xs) | f x       = True
+             | xs == []  = False
+             | otherwise = any f xs
 
--- and
+
+all :: Eq a => (a -> Bool) -> [a] -> Bool
+all f (x:xs) | not (f x) = False
+             | xs == []  = True
+             | otherwise = all f xs
+
+-- and :: a -> a -> Bool
+
 -- or
 
 -- concat
@@ -118,8 +137,15 @@ drop (_:xs) = xs
 -- isInfixOf
 -- isSuffixOf
 
--- zip
--- zipWith
+zip :: Eq a => Eq b => [a] -> [b] -> [(a,b)]
+zip (x:xs) (y:ys) | ys == []  = []
+                  | xs == []  = []
+                  | otherwise = (x,y):(zip xs ys)
+
+zipWith :: Eq a => Eq b => (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith f (x:xs) (y:ys) | xs == [] = []
+                        | ys == [] = []
+                        | otherwise = (f x y): zipWith f xs ys
 
 -- intercalate
 -- nub
