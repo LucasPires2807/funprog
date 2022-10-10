@@ -1,13 +1,13 @@
 module ExFromWhile where
 
 fromWhile :: Int -> (a -> Bool) -> [a] -> [a]
-fromWhile n f = takeWhile f . drop (n-2)
+fromWhile n f = takeWhile f . drop n
 
 fromFor :: Int -> Int -> [a] -> [a]
-fromFor n m = drop (n-1) . take m
+fromFor n m = take m . drop n
 
 fromTo :: Int -> Int -> [a] -> [a]
-fromTo = fromFor
+fromTo n m = take (m-1) . drop n
 
 fromToThat :: Int -> Int -> (a -> Bool) -> [a] -> [a]
-fromToThat n m f  = takeWhile f . drop (n-1) . take m
+fromToThat n m f  = filter f . take (m-1) . drop n
