@@ -7,13 +7,12 @@ module ExRat
 
 -- define Rat:
 data Rat = Rat Integer Integer
-    deriving (Eq)
 
 instance Show Rat where
     show (Rat a b) = "Rat " ++ show a ++ " " ++ show b
 
 instance Eq Rat where
-    (==)
+    (Rat a b) == (Rat x y) = (a*y) == (x*b)
 
 instance Num Rat where
     (Rat a b) + (Rat m n) = Rat (a*n + m*b) (b * n)
@@ -24,7 +23,9 @@ instance Num Rat where
     fromInteger x = Rat x 1
 
 instance Ord Rat where
-    compare = undefined
+    compare (Rat a b) (Rat x y) | (Rat a b) == (Rat x y) = EQ
+                                | a*y < x*b              = LT
+                                | otherwise              = GT
 
 rat :: Integer -> Integer -> Rat
 rat m n | n == 0 = error "Denominator can't be zero!"
