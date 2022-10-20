@@ -92,6 +92,6 @@ invertible :: Matrix2x2 -> Bool
 invertible = not . singular
 
 inverse :: Matrix2x2 -> Matrix2x2
-inverse m@(Matrix2x2 a b c d) | invertible m = Matrix2x2 ((det m) * d) ((det m) * (-c)) ((det m) *(-b)) ((det m) * a)
+inverse m@(Matrix2x2 a b c d) | invertible m = Matrix2x2 (((1 / det m)) * d) (((1/ det m)) * (-c)) (((1/ det m)) *(-b)) (((1 / det m)) * a)
                               | otherwise    = error "This matrix does not have inverse"
 
